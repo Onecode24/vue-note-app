@@ -1,15 +1,22 @@
 <template>
-  <h1 class="text-3xl text-gray-500 font-semibold">Started Note App front-end</h1>
-
+  <div class="">
+    <div class="navbar hidden">
+      
+    </div>
+    <div class="">
+      <router-view></router-view>
+    </div>
+  </div>
 </template>
 
 <script>
+
 
 export default {
   name: 'App',
   components: {
     
-  }
+}
 }
 </script>
 
