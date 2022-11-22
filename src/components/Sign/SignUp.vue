@@ -10,7 +10,7 @@
             </div>
             <InputField placeholder="username" v-model.trim="user.username" />
             <InputField placeholder="Password" v-model.trim="user.password"/>
-            <InputField placeholder="Re-enter Password" v-if="!login" v-model="user.password2"/>
+            <InputField placeholder="e-mail" v-if="!login" v-model="user.password2"/>
             <div class="flex justify-center mt-3 mb-2">
                 <ButtonField class=" text-center text-xl w-[275px]" @click="checkInput">
                     <span v-if="!login">Sign Up</span>
@@ -30,6 +30,7 @@
 <script>
 import InputField from '../Global/InputField.vue';
 import ButtonField from '../Global/ButtonField.vue';
+import {instanceAxios} from '../../utils/instanceAxios'
 
     export default {
         name: 'SignUp',
@@ -68,6 +69,68 @@ import ButtonField from '../Global/ButtonField.vue';
                 }
                 
             },
+            async  userRequest(){
+                if(this.path=='signup'){
+                    try {
+                        let response = await instanceAxios({
+                            method: 'POST',
+                            url: 'http://localhost:3000/api/users/new-user',
+                            data: {
+                                username: this.user.username,
+                                password: this.user.password,
+                                email: this.user.password2,
+                            },
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Access-Control-Allow-Origin': '*',
+                                'Accept' : 'application/json, text/plain, */*',
+                                'Access-Control-Allow-Methods' : 'GET, PUT, POST, DELETE, OPTIONS',
+                                'Access-Control-Allow-Credentials' : true
+                            },
+                            responseType: 'json',
+                        })
+                         if(response.data.user){
+                            this.$storage.setStorageSync('user',response.data.user)
+                            window.location.href='admin'
+                         }
+                         console.log(response.data.user);
+
+                    } catch (error) {
+                        console.log("[CATCH ERROR]:: ",error);
+                    }
+                    
+                }else{
+                    try {
+                        let response = await instanceAxios({
+                            method: 'POST',
+                            url: 'http://localhost:3000/api/users/login',
+                            data: {
+                                username: this.user.username,
+                                password: this.user.password,
+                                // email: this.user.password2,
+                            },
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Access-Control-Allow-Origin': '*',
+                                'Accept' : 'application/json, text/plain, */*',
+                                'Access-Control-Allow-Methods' : 'GET, PUT, POST, DELETE, OPTIONS',
+                                'Access-Control-Allow-Credentials' : true
+                            },
+                            responseType: 'json',
+                        })
+                                 
+                        console.log(response.data.user);
+                        if(response.data.user){
+                            this.$storage.setStorageSync('user',response.data)
+                            window.location.href='admin'
+                        }
+                           
+
+                    } catch (error) {
+                        console.log("[CATCH ERROR]:: ",error);
+                    }
+                }
+            }
             
         },
         beforeMount(){
